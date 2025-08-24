@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>موقعي الشخصي - زياد 🚀</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --bg: #000;
+      --text: #fff;
+      --accent: #00fff7;
+      --secondary: #007bff;
+      --card-bg: rgba(255,255,255,0.05);
+      --footer-bg: rgba(255,255,255,0.05);
+    }
+    body.light {
+      --bg: #fdfdfd;
+      --text: #111;
+      --accent: #007bff;
+      --secondary: #00fff7;
+      --card-bg: rgba(0,0,0,0.05);
+      --footer-bg: rgba(0,0,0,0.05);
+    }
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      transition: background 0.5s, color 0.5s;
+      overflow-x: hidden;
+    }
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+    header {
+      text-align: center;
+      padding: 100px 20px 50px;
+      position: relative;
+    }
+    h1 {
+      font-size: 3em;
+      color: var(--accent);
+      text-shadow: 0 0 15px var(--accent), 0 0 30px var(--secondary);
+    }
+    p {
+      font-size: 1.2em;
+      opacity: 0.85;
+    }
+    .btn {
+      display: inline-block;
+      margin: 15px 10px 0;
+      padding: 12px 25px;
+      border-radius: 30px;
+      background: var(--accent);
+      color: #000;
+      font-weight: bold;
+      text-decoration: none;
+      box-shadow: 0 0 15px var(--accent), 0 0 40px var(--secondary);
+      transition: 0.3s;
+      animation: glow 2s infinite alternate, shake 4s infinite ease-in-out;
+    }
+    .btn:hover {
+      background: var(--secondary);
+      color: #fff;
+      transform: scale(1.05);
+    }
+    .toggle-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 8px 15px;
+      font-size: 0.9em;
+      border-radius: 20px;
+      border: none;
+      cursor: pointer;
+      background: var(--secondary);
+      color: #fff;
+      box-shadow: 0 0 10px var(--accent);
+    }
+    section {
+      padding: 80px 20px;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(50px);
+      transition: all 1s ease-in-out;
+    }
+    section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    section h2 {
+      color: var(--accent);
+      margin-bottom: 30px;
+      font-size: 2em;
+    }
+    .skill {
+      margin: 20px auto;
+      max-width: 500px;
+      text-align: left;
+    }
+    .skill span {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: var(--accent);
+    }
+    .progress {
+      background: rgba(255,255,255,0.1);
+      border-radius: 20px;
+      overflow: hidden;
+      height: 25px;
+      box-shadow: 0 0 10px var(--accent);
+    }
+    body.light .progress { background: rgba(0,0,0,0.1); }
+    .progress-bar {
+      height: 100%;
+      line-height: 25px;
+      text-align: right;
+      padding-right: 10px;
+      background: linear-gradient(90deg, var(--secondary), var(--accent));
+      color: #000;
+      font-weight: bold;
+      transition: width 2s ease-in-out;
+    }
+    .projects {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+    .project-card {
+      background: var(--card-bg);
+      padding: 20px;
+      border-radius: 15px;
+      width: 250px;
+      box-shadow: 0 0 15px var(--accent);
+      transition: 0.3s;
+    }
+    .project-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 30px var(--secondary);
+    }
+    .project-card h3 {
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    /* === تايم لاين الشهادات === */
+    .timeline {
+      position: relative;
+      max-width: 800px;
+      margin: auto;
+    }
+    .timeline::after {
+      content: '';
+      position: absolute;
+      width: 4px;
+      background: var(--accent);
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      margin-left: -2px;
+    }
+    .timeline-item {
+      padding: 20px 30px;
+      position: relative;
+      width: 50%;
+    }
+    .timeline-item::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      right: -10px;
+      background: var(--secondary);
+      border: 3px solid var(--accent);
+      top: 30px;
+      border-radius: 50%;
+      z-index: 1;
+    }
+    .timeline-item.left { left: 0; }
+    .timeline-item.right { left: 50%; }
+    .timeline-content {
+      padding: 20px;
+      background: var(--card-bg);
+      border-radius: 10px;
+      box-shadow: 0 0 15px var(--accent);
+      transition: 0.3s;
+    }
+    .timeline-content h3 {
+      margin: 0;
+      color: var(--accent);
+    }
+    .timeline-content p {
+      margin: 10px 0 0;
+    }
+
+    /* === Testimonials === */
+    .testimonials {
+      max-width: 800px;
+      margin: auto;
+      position: relative;
+      overflow: hidden;
+    }
+    .testimonial {
+      display: none;
+      background: var(--card-bg);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px var(--accent);
+      animation: fade 1s;
+    }
+    .testimonial.active {
+      display: block;
+    }
+    .testimonial p {
+      font-size: 1.1em;
+      font-style: italic;
+    }
+    .testimonial h4 {
+      margin-top: 15px;
+      color: var(--secondary);
+    }
+    @keyframes fade {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+
+    .contact a {
+      color: var(--accent);
+      margin: 0 15px;
+      font-size: 1.8em;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+    .contact a:hover {
+      color: var(--secondary);
+      text-shadow: 0 0 10px var(--accent);
+    }
+    footer {
+      background: var(--footer-bg);
+      text-align: center;
+      padding: 20px;
+      margin-top: 50px;
+      color: #aaa;
+    }
+    @keyframes glow {
+      from { box-shadow: 0 0 10px var(--accent); }
+      to { box-shadow: 0 0 25px var(--accent), 0 0 50px var(--secondary); }
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(2px); }
+    }
+  </style>
+</head>
+<script src="extra.js"></script>
+<body>
+
+  <canvas id="stars"></canvas>
+
+  <header>
+    <button class="toggle-btn" id="theme-toggle">🌞 Light</button>
+    <h1>مرحبًا بك في عالمي</h1>
+    <p>أنا زياد 🚀 بحب البرمجة والذكاء الاصطناعي</p>
+    <a href="#about" class="btn"><i class="fa-solid fa-rocket"></i> انطلق معي</a>
+    <a href="cv.pdf" class="btn" download><i class="fa-solid fa-download"></i> تحميل CV</a>
+    <a href="cv.pdf" target="_blank" class="btn"><i class="fa-solid fa-eye"></i> عرض CV</a>
+  </header>
+
+  <section id="about">
+    <h2><i class="fa-solid fa-user"></i> من أنا؟</h2>
+    <p>أنا زياد، شغوف بالبرمجة والذكاء الاصطناعي، وأسعى أن أصبح مهندس برمجة وأشارك في بناء المستقبل الرقمي.</p>
+  </section>
+
+  <section id="skills">
+    <h2><i class="fa-solid fa-code"></i> مهاراتي</h2>
+    <div class="skill">
+      <span>HTML</span>
+      <div class="progress"><div class="progress-bar" style="width: 90%;">90%</div></div>
+    </div>
+    <div class="skill">
+      <span>CSS</span>
+      <div class="progress"><div class="progress-bar" style="width: 85%;">85%</div></div>
+    </div>
+    <div class="skill">
+      <span>JavaScript</span>
+      <div class="progress"><div class="progress-bar" style="width: 75%;">75%</div></div>
+    </div>
+    <div class="skill">
+      <span>AI Basics</span>
+      <div class="progress"><div class="progress-bar" style="width: 60%;">60%</div></div>
+    </div>
+  </section>
+
+  <section id="projects">
+    <h2><i class="fa-solid fa-diagram-project"></i> مشاريعي</h2>
+    <div class="projects">
+      <div class="project-card">
+        <h3><i class="fa-solid fa-globe"></i> مشروع 1</h3>
+        <p>موقع شخصي باستخدام HTML & CSS.</p>
+      </div>
+      <div class="project-card">
+        <h3><i class="fa-solid fa-code"></i> مشروع 2</h3>
+        <p>تطبيق ويب تفاعلي باستخدام JavaScript.</p>
+      </div>
+      <div class="project-card">
+        <h3><i class="fa-solid fa-robot"></i> مشروع 3</h3>
+        <p>تجربة بسيطة في الذكاء الاصطناعي.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="certificates">
+    <h2><i class="fa-solid fa-certificate"></i> شهاداتي و إنجازاتي</h2>
+    <div class="timeline">
+      <div class="timeline-item left">
+        <div class="timeline-content">
+          <h3><i class="fa-solid fa-school"></i> شهادة أساسيات HTML & CSS</h3>
+          <p>2023 - اجتزت دورة متخصصة في أساسيات تصميم المواقع.</p>
+        </div>
+      </div>
+      <div class="timeline-item right">
+        <div class="timeline-content">
+          <h3><i class="fa-solid fa-code"></i> شهادة JavaScript</h3>
+          <p>2024 - أكملت دورة لبناء تطبيقات تفاعلية باستخدام JavaScript.</p>
+        </div>
+      </div>
+      <div class="timeline-item left">
+        <div class="timeline-content">
+          <h3><i class="fa-solid fa-robot"></i> شهادة مقدمة الذكاء الاصطناعي</h3>
+          <p>2025 - تعلمت أساسيات الذكاء الاصطناعي وتطبيقاته.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="testimonials">
+    <h2><i class="fa-solid fa-comments"></i> آراء العملاء</h2>
+    <div class="testimonials">
+      <div class="testimonial active">
+        <p>💬 "زياد إنسان مبدع! قدر يبنيلي موقع سريع، أنيق، وبيشتغل على كل الأجهزة بدون مشاكل."</p>
+        <h4>- أحمد علي</h4>
+      </div>
+      <div class="testimonial">
+        <p>💬 "بصراحة، مشفتش حد شاطر كدا في التفاصيل. شغله فعلاً يخليك واثق إن مشروعك ناجح."</p>
+        <h4>- مريم خالد</h4>
+      </div>
+      <div class="testimonial">
+        <p>💬 "زياد دمج البرمجة مع الذكاء الاصطناعي بشكل احترافي. مشروعنا بقى أقوى بفضله!"</p>
+        <h4>- محمد حسن</h4>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <h2><i class="fa-solid fa-envelope"></i> تواصل معي</h2>
+    <div class="contact">
+      <a href="mailto:Ziadriby123@gmail.com"><i class="fa-solid fa-envelope"></i></a>
+      <a href="https://www.facebook.com/share/1CbFBTp8FB/" target="_blank"><i class="fa-brands fa-facebook"></i></a>
+      <a href="https://www.instagram.com/ziad_j1" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+      <a href="https://wa.me/201012148292" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2025 جميع الحقوق محفوظة | موقع زياد الشخصي</p>
+  </footer>
+
+  <script>
+    // خلفية نجوم
+    const canvas = document.getElementById("stars");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    let stars = [];
+    for (let i = 0; i < 200; i++) {
+      stars.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, r: Math.random()*2, s: Math.random()*0.5});
+    }
+    function drawStars() {
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      ctx.fillStyle = "#fff";
+      stars.forEach(star=>{
+        ctx.beginPath();ctx.arc(star.x,star.y,star.r,0,Math.PI*2);ctx.fill();
+      });
+    }
+    function updateStars() {
+      stars.forEach(star=>{
+        star.y += star.s;
+        if(star.y > canvas.height) star.y = 0;
+      });
+    }
+    function animate() {drawStars();updateStars();requestAnimationFrame(animate);} animate();
+
+    // انيميشن عند السكرول
+    const sections = document.querySelectorAll("section");
+    const revealOnScroll = () => {
+      const trigger = window.innerHeight * 0.85;
+      sections.forEach(sec=>{
+        if(sec.getBoundingClientRect().top < trigger) sec.classList.add("visible");
+      });
+    };
+    window.addEventListener("scroll", revealOnScroll);
+    revealOnScroll();
+
+    // دارك / لايت مود + حفظ باللوكل
+    const toggleBtn = document.getElementById("theme-toggle");
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "light") {
+      document.body.classList.add("light");
+      toggleBtn.textContent = "🌙 Dark";
+    }
+    toggleBtn.addEventListener("click", () => {
+      document.body.classList.toggle("light");
+      if (document.body.classList.contains("light")) {
+        toggleBtn.textContent = "🌙 Dark";
+        localStorage.setItem("theme","light");
+      } else {
+        toggleBtn.textContent = "🌞 Light";
+        localStorage.setItem("theme","dark");
+      }
+    });
+
+    // Testimonials auto change
+    let index = 0;
+    const testimonials = document.querySelectorAll(".testimonial");
+    setInterval(()=>{
+      testimonials[index].classList.remove("active");
+      index = (index + 1) % testimonials.length;
+      testimonials[index].classList.add("active");
+    }, 4000);
+  </script>
+</body>
+</html>
